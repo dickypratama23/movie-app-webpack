@@ -39,7 +39,7 @@ const getSimilarMovies = async (id, type) => {
 
   const response = await theMovieDBInstance.get(url);
   const data = response.data.results;
-  await renderSimilarMovies(data);
+  await renderSimilarMovies(data, type);
 };
 
 const renderDetailMovie = (movie) => {
@@ -53,7 +53,6 @@ const renderDetailMovie = (movie) => {
   `;
 
   let tags = "";
-  // console.log(movie)
   movie.genres.forEach((tag) => {
     tags += `
     <div class="font-semibold px-3 text-sm">${tag.name}</div>
@@ -99,22 +98,32 @@ const renderDetailMovie = (movie) => {
   `;
 };
 
-const renderSimilarMovies = (movies) => {
+const renderSimilarMovies = (movies, type) => {
   const similarMoviesElement = document.querySelector('.similar-movies');
   similarMoviesElement.innerHTML = '';
+
+  function abc() {
+    const id = $(this).data('id');
+    const type = $(this).data('type');
+
+    getDetailMovie(id, type);
+  }
 
   movies.slice(0, 10).forEach((movie) => {
     similarMoviesElement.innerHTML += `
         <div class="cursor-pointer group-hover:scale-95 hover:!scale-100">
           <img
             alt=""
-            class="w-36 rounded-sm"
+            class="w-36 rounded-sm clickme2"
             src="https://image.tmdb.org/t/p/original/${movie.poster_path}"
+            data-id="${movie.id}"
           />
-          <p class="py-2 text-gray-400 tracking-wide text-sm font-semibold">${movie.title ?? movie.original_name}</p>
+          <p class="py-2 text-white tracking-wide text-sm font-semibold">${movie.title ?? movie.original_name}</p>
         </div>
     `;
   });
+
+  const clickme2 = $('.clickme2').on('click', abc);
 };
 
 const showFormattedDate = (date) => {
